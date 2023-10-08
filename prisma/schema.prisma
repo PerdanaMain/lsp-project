@@ -1,0 +1,60 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Users {
+  user_id      Int      @id @default(autoincrement())
+  user_name    String
+  user_phone   String   @unique
+  user_address String
+  user_email   String   @unique
+  password     String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  // many to one relation
+  role   Roles @relation(fields: [roleId], references: [role_id])
+  roleId Int
+}
+
+model Roles {
+  role_id   Int      @id @default(autoincrement())
+  role_desc String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // one to many relation
+  users Users[]
+}
+
+model Banks {
+  bank_id   Int      @id @default(autoincrement())
+  bank_name String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Products {
+  product_id    Int      @id @default(autoincrement())
+  product_name  String   @unique
+  product_price Int
+  product_stock Int
+  product_image String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model Transactions {
+  transaction_id Int      @id @default(autoincrement())
+  transaction_at DateTime @default(now())
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
