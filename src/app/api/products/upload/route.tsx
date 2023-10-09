@@ -1,4 +1,8 @@
 import { NextResponse } from "next/server";
+import type { Products } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
+
+const prisma = new PrismaClient();
 
 export const POST = async (req: Request) => {
   try {
@@ -13,7 +17,44 @@ export const POST = async (req: Request) => {
       );
     }
 
-    return NextResponse.json({ status: 200, message: "Hello World" });
+    // get body from request
+    const { product_name, product_price, product_stock, categoryId }: Products =
+      await req.json();
+
+    // if product name is exist
+    const product = await prisma.products.findUnique({
+      where: {
+        product_name: product_name,
+      },
+    });
+
+    if (product) {
+      return NextResponse.json(
+        { status: 409, message: "Product Name Already Exist" },
+        { status: 409 }
+      );
+    }
+
+    const insert = await prisma.products.create({
+      data: {
+        product_name,
+        product_price,
+        product_stock,
+        product_image: "",
+        categoryId,
+      },
+    });
+
+    return NextResponse.json(
+      {
+        status: 201,
+        message: "Product Created",
+        data: {
+          insert,
+        },
+      },
+      { status: 201 }
+    );
   } catch (error: any) {
     return NextResponse.json(
       {

@@ -50,6 +50,18 @@ model Products {
   product_image String
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
+
+  // many to one relation
+  categorie  Categories @relation(fields: [categoryId], references: [category_id])
+  categoryId Int
+}
+
+model Categories {
+  category_id   Int        @id @default(autoincrement())
+  category_name String     @unique
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+  products      Products[]
 }
 
 model Transactions {

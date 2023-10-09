@@ -1,10 +1,11 @@
 import { PrismaClient } from "@prisma/client";
-import { cookies } from "next/headers";
+import { cookies, headers } from "next/headers";
 import { NextResponse } from "next/server";
 import type { Roles } from "@prisma/client";
 
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import Head from "next/head";
 
 const prisma = new PrismaClient();
 
@@ -26,12 +27,7 @@ export const POST = async (req: Request) => {
         user_address: true,
         user_email: true,
         password: true,
-        Roles: {
-          select: {
-            role_id: true,
-            role_desc: true,
-          },
-        },
+        roleId: true,
       },
     });
 
@@ -57,8 +53,7 @@ export const POST = async (req: Request) => {
         name: user.user_name,
         phone: user.user_phone,
         address: user.user_address,
-        role: user.Roles.role_id,
-        role_desc: user.Roles.role_desc,
+        role: user.roleId,
       },
       KEY,
       {
@@ -73,6 +68,7 @@ export const POST = async (req: Request) => {
       httpOnly: true,
       expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 365),
     });
+    headers.apply({ authorization: `Bearer ${token}` });
 
     return NextResponse.json(
       {

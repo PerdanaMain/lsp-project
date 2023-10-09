@@ -15,9 +15,9 @@ interface JwtPayload {
 
 const Navbar = () => {
   const cookies = useCookies();
+  const token = cookies.get("access");
   const router = useRouter();
   const pathname = usePathname();
-  const token = cookies.get("access");
 
   const [name, setName] = useState("");
 

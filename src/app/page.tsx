@@ -1,6 +1,6 @@
 "use client";
-import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 import Image from "next/image";
 import team1 from "../assets/img/team-1-800x800.jpg";
