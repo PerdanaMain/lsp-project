@@ -70,17 +70,18 @@ const Login = () => {
           icon: "success",
           title: "Success",
           text: "Login success",
-        }).then(() => {
-          handleModal();
-
-          const decoded = jwt.decode(res.data.data.token) as JwtPayload;
-          if (decoded.role == 1) {
-            router.refresh();
-            router.push("/admin");
-          } else {
-            // redirect to home
-            router.refresh();
-            router.push("/");
+        }).then((result) => {
+          if (result.isConfirmed) {
+            handleModal();
+            const decoded = jwt.decode(res.data.data.token) as JwtPayload;
+            if (decoded.role == 1) {
+              router.refresh();
+              router.push("/admin");
+            } else {
+              // redirect to home
+              router.refresh();
+              router.push("/");
+            }
           }
         });
       }
@@ -104,7 +105,7 @@ const Login = () => {
         }}
         onClick={handleModal}
       >
-        <i className="fas fa-arrow-alt-circle-down"></i> Login
+        Login
       </button>
 
       <div className={isOpen ? "modal modal-open" : "modal"}>

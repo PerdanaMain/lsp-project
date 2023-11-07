@@ -19,7 +19,7 @@ export const POST = async (req: Request) => {
       password,
       user_phone,
       user_address,
-      RoleId,
+      roleId,
     }: Users = await req.json();
 
     // check if email already exists
@@ -47,7 +47,7 @@ export const POST = async (req: Request) => {
         password: hashedPassword,
         user_phone,
         user_address,
-        RoleId,
+        roleId,
       },
       select: {
         user_id: true,
@@ -55,12 +55,7 @@ export const POST = async (req: Request) => {
         user_phone: true,
         user_address: true,
         user_email: true,
-        Roles: {
-          select: {
-            role_id: true,
-            role_desc: true,
-          },
-        },
+        roleId: true,
       },
     });
 
@@ -72,8 +67,7 @@ export const POST = async (req: Request) => {
         name: user.user_name,
         phone: user.user_phone,
         address: user.user_address,
-        role: user.Roles.role_id,
-        role_desc: user.Roles.role_desc,
+        role: user.roleId,
       },
       KEY
     );

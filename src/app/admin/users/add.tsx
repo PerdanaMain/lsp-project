@@ -5,19 +5,20 @@ import { useRouter } from "next/navigation";
 
 import axios from "axios";
 import Swal from "sweetalert2";
-import type { Categories } from "@prisma/client";
+import type { Roles } from "@prisma/client";
 
-const Add = ({ categories }: { categories: Categories[] }) => {
+const Add = ({ roles }: { roles: Roles[] }) => {
   const cookies = useCookies();
   const token = cookies.get("access");
   const router = useRouter();
 
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsloading] = useState(false);
-  const [title, setTitle] = useState("");
-  const [price, setPrice] = useState("");
-  const [stock, setStock] = useState("");
-  const [categorie, setCategorie] = useState("");
+  const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [address, setAddress] = useState("");
+  const [role, setRole] = useState("");
+  const [email, setEmail] = useState("");
 
   const handleModal = () => {
     setIsOpen(!isOpen);
@@ -27,57 +28,33 @@ const Add = ({ categories }: { categories: Categories[] }) => {
     e.preventDefault();
     setIsloading(true);
 
-    // price validation
-    const priceRegex = /^[0-9]+$/;
-    if (!priceRegex.test(price)) {
-      setIsloading(false);
-      return Swal.fire({
-        icon: "error",
-        title: "Oops...",
-        text: "Price must be a number!",
-      });
-    }
-
-    // stock validation
-    const stockRegex = /^[0-9]+$/;
-    if (!stockRegex.test(stock)) {
-      setIsloading(false);
-      return Swal.fire({
-        icon: "error",
-        title: "Oops...",
-        text: "Stock must be a number!",
-      });
-    }
-
     try {
       const res = await axios.post(
-        "/api/products/upload",
+        "/api/users",
         {
-          product_name: title,
-          product_price: Number(price),
-          product_stock: Number(stock),
-          categoryId: Number(categorie),
+          user_name: name,
+          user_phone: phone,
+          user_email: email,
+          user_address: address,
+          roleId: role,
         },
         {
           headers: {
-            Authorization: "Bearer " + token,
+            Authorization: `Bearer ${token}`,
           },
         }
       );
-      if (res.status === 201) {
+
+      if (res.status == 201) {
         Swal.fire({
           icon: "success",
           title: "Success",
-          text: "Create Product Successfully",
-        }).then(() => {
-          handleModal();
-          // set state to default
-          setTitle("");
-          setPrice("");
-          setStock("");
-          setCategorie("");
-
-          router.refresh();
+          text: "Add Users Successfully",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            handleModal();
+            router.refresh();
+          }
         });
       }
     } catch (error: any) {
@@ -99,50 +76,60 @@ const Add = ({ categories }: { categories: Categories[] }) => {
       <div className={isOpen ? "modal modal-open" : "modal"}>
         <div className="modal-box">
           <form onSubmit={handleSubmit}>
-            <h3 className="font-bold text-large">New Product</h3>
+            <h3 className="font-bold text-large">New User</h3>
             <div className="form-control w-full">
-              <label className="label font-bold">Product Name</label>
+              <label className="label font-bold">Name</label>
               <input
                 type="text"
                 className="input input-bordered"
-                placeholder="Product Name"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
+                placeholder="Name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
               />
             </div>
             <div className="form-control w-full">
-              <label className="label font-bold">Product Price</label>
+              <label className="label font-bold">Phone</label>
               <input
                 type="text"
                 className="input input-bordered"
-                placeholder="Product Price"
-                value={price}
-                onChange={(e) => setPrice(e.target.value)}
+                placeholder="Phone"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
               />
             </div>
             <div className="form-control w-full">
-              <label className="label font-bold">Product Stock</label>
+              <label className="label font-bold">Email</label>
               <input
                 type="text"
                 className="input input-bordered"
-                placeholder="Product Stock"
-                value={stock}
-                onChange={(e) => setStock(e.target.value)}
+                placeholder="Email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
               />
             </div>
             <div className="form-control w-full">
-              <label className="label font-bold">Brand</label>
+              <label className="label font-bold">Adress</label>
+              <input
+                type="text"
+                className="input input-bordered"
+                placeholder="Adress"
+                value={address}
+                onChange={(e) => setAddress(e.target.value)}
+              />
+            </div>
+            <div className="form-control w-full">
+              <label className="label font-bold">Role</label>
               <select
                 className="select select-bordered"
-                value={categorie}
-                onChange={(e) => setCategorie(e.target.value)}
+                value={role}
+                onChange={(e) => setRole(e.target.value)}
               >
                 <option value="" disabled hidden>
-                  ==== Select a Category ====
+                  ==== Select a Role ====
                 </option>
-                {categories.map((categorie, index) => (
-                  <option key={index} value={categorie.category_id}>
-                    {categorie.category_name}
+                {roles.map((roles, index) => (
+                  <option key={index} value={roles.role_id}>
+                    {roles.role_desc}
                   </option>
                 ))}
               </select>

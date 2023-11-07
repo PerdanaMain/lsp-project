@@ -26,7 +26,6 @@ const Navbar = () => {
 
   useEffect(() => {
     if (token) {
-      document.title = "Home | Medical Store";
       setIsLogin(true);
 
       const decoded = jwt.decode(token) as JwtPayload;
@@ -81,9 +80,7 @@ const Navbar = () => {
             <button
               className="cursor-pointer text-xl leading-none px-3 py-1 border border-solid border-transparent rounded bg-transparent block lg:hidden outline-none focus:outline-none"
               type="button"
-            >
-              <i className="text-white fas fa-bars"></i>
-            </button>
+            ></button>
           </div>
           <div
             className="lg:flex flex-grow items-center bg-white lg:bg-transparent lg:shadow-none hidden"
@@ -95,7 +92,6 @@ const Navbar = () => {
                   className="lg:text-white lg:hover:text-gray-300 text-gray-800 px-3 py-4 lg:py-2 flex items-center text-xs uppercase font-bold"
                   href="/medkits"
                 >
-                  <i className="lg:text-gray-300 text-gray-500 far fa-file-alt text-lg leading-lg mr-2"></i>
                   Medkits
                 </a>
               </li>
@@ -104,7 +100,6 @@ const Navbar = () => {
                   className="lg:text-white lg:hover:text-gray-300 text-gray-800 px-3 py-4 lg:py-2 flex items-center text-xs uppercase font-bold"
                   href="/#features"
                 >
-                  <i className="lg:text-gray-300 text-gray-500 far fa-file-alt text-lg leading-lg mr-2"></i>
                   Features
                 </a>
               </li>
@@ -113,7 +108,6 @@ const Navbar = () => {
                   className="lg:text-white lg:hover:text-gray-300 text-gray-800 px-3 py-4 lg:py-2 flex items-center text-xs uppercase font-bold"
                   href="/#teams"
                 >
-                  <i className="lg:text-gray-300 text-gray-500 far fa-file-alt text-lg leading-lg mr-2"></i>
                   Teams
                 </a>
               </li>
@@ -122,7 +116,6 @@ const Navbar = () => {
                   className="lg:text-white lg:hover:text-gray-300 text-gray-800 px-3 py-4 lg:py-2 flex items-center text-xs uppercase font-bold"
                   href="/#about"
                 >
-                  <i className="lg:text-gray-300 text-gray-500 far fa-file-alt text-lg leading-lg mr-2"></i>
                   About
                 </a>
               </li>
@@ -145,7 +138,14 @@ const Navbar = () => {
                       className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52 mt-5"
                     >
                       <li>
+                        <a href="/transactions">
+                          <i className="fa fa-right-to-bracket"></i>
+                          Transactions
+                        </a>
+                      </li>
+                      <li>
                         <a role="button" onClick={handleLogout}>
+                          <i className="fa fa-right-to-bracket"></i>
                           Logout
                         </a>
                       </li>

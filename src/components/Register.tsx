@@ -78,7 +78,7 @@ const Register = () => {
         password,
         user_phone: phone,
         user_address: address,
-        RoleId: 2,
+        roleId: 2,
       });
       if (res.status === 201) {
         setIsloading(false);
@@ -86,11 +86,15 @@ const Register = () => {
         //set cookie
         cookies.set("access", res.data.data.token);
 
-        Swal.fire("Success", "Registration success", "success").then(() => {
-          handleModal();
-          router.refresh();
-          router.push("/");
-        });
+        Swal.fire("Success", "Registration success", "success").then(
+          (result) => {
+            if (result.isConfirmed) {
+              handleModal();
+              router.refresh();
+              router.push("/");
+            }
+          }
+        );
       }
     } catch (error: any) {
       setIsloading(false);
@@ -109,7 +113,7 @@ const Register = () => {
         }}
         onClick={handleModal}
       >
-        <i className="fas fa-arrow-alt-circle-down"></i> Register
+        Register
       </button>
 
       <div className={isOpen ? "modal modal-open" : "modal"}>

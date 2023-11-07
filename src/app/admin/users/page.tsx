@@ -7,24 +7,21 @@ import Delete from "./delete";
 import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
-const getCategories = async () => {
-  const categories = await prisma.categories.findMany();
-  return categories;
+const getRoles = async () => {
+  const roles = await prisma.roles.findMany();
+  return roles;
 };
 
-const getProduct = async () => {
-  const products = await prisma.products.findMany({
+const getUsers = async () => {
+  const users = await prisma.users.findMany({
     include: {
-      categorie: true,
+      role: true,
     },
   });
-  return products;
+  return users;
 };
 const Page = async () => {
-  const [products, categories] = await Promise.all([
-    getProduct(),
-    getCategories(),
-  ]);
+  const [users, roles] = await Promise.all([getUsers(), getRoles()]);
 
   return (
     <div>
@@ -34,7 +31,7 @@ const Page = async () => {
         <Navbar />
 
         <div className="py-10 px-10">
-          <Add categories={categories} />
+          <Add roles={roles} />
           <table className="table w-full ">
             <thead>
               <tr>
@@ -46,18 +43,18 @@ const Page = async () => {
                 <th className="tag-center">Actions</th>
               </tr>
             </thead>
-            {products.length !== 0 ? (
+            {users.length !== 0 ? (
               <tbody>
-                {products.map((product, index) => (
-                  <tr key={product.product_id}>
+                {users.map((user, index) => (
+                  <tr key={user.user_id}>
                     <td>{index + 1}</td>
-                    <td>{product.product_name}</td>
-                    <td>Rp. {product.product_price.toLocaleString()}</td>
-                    <td>{product.product_stock}</td>
-                    <td>{product.categorie.category_name}</td>
+                    <td>{user.user_name}</td>
+                    <td>{user.user_phone}</td>
+                    <td>{user.user_address}</td>
+                    <td>{user.user_email}</td>
                     <td className="flex">
-                      <Edit product={product} categories={categories} />
-                      <Delete product={product} />
+                      <Edit user={user} roles={roles} />
+                      <Delete user={user} />
                     </td>
                   </tr>
                 ))}

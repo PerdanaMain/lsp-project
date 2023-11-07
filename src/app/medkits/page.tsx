@@ -1,9 +1,25 @@
-"use client";
+import { PrismaClient } from "@prisma/client";
 
 import Footer from "../../components/Footer";
 import Navbar from "../../components/Navbar";
+import BuyHandler from "../../components/BuyHandler";
+import Image from "next/image";
 
-const Page = () => {
+const prisma = new PrismaClient();
+
+const getProduct = async () => {
+  const products = await prisma.products.findMany({
+    include: {
+      categorie: true,
+    },
+  });
+
+  return products;
+};
+
+const Page = async () => {
+  const [products] = await Promise.all([getProduct()]);
+
   return (
     <div>
       <Navbar />
@@ -47,60 +63,45 @@ const Page = () => {
               <div className="px-6">
                 {/* Products Loop */}
                 <div className="flex flex-wrap">
-                  <div className="lg:pt-12 pt-6 w-full md:w-4/12 px-4 text-center">
-                    <div className="relative flex flex-col min-w-0 break-words bg-white w-full mb-8 shadow-lg rounded-lg">
-                      <div className="px-4 py-5 flex-auto">
-                        <div className="text-white p-3 text-center inline-flex items-center justify-center w-12 h-12 mb-5 shadow-lg rounded-full bg-red-400">
-                          <i className="fas fa-award"></i>
-                        </div>
-                        <h6 className="text-xl font-semibold">
-                          Awarded Agency
-                        </h6>
-                        <p className="mt-2 mb-4 text-gray-600">
-                          Divide details about your product or agency work into
-                          parts. A paragraph describing a feature will be
-                          enough.
-                        </p>
-                      </div>
-                    </div>
-                  </div>
+                  {products.map((product, index) => (
+                    <div
+                      className="card w-96 bg-base-100 shadow-xl mr-3 mt-3 mb-3"
+                      key={index}
+                    >
+                      <figure>
+                        <Image
+                          src="https://images.unsplash.com/photo-1582883040775-f98dd8c04597?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80"
+                          alt="Shoes"
+                          width={500}
+                          height={500}
+                          style={{
+                            width: "400px",
+                            height: "200px",
+                            objectFit: "cover",
+                          }}
+                        />
+                      </figure>
 
-                  <div className="lg:pt-12 pt-6 w-full md:w-4/12 px-4 text-center">
-                    <div className="relative flex flex-col min-w-0 break-words bg-white w-full mb-8 shadow-lg rounded-lg">
-                      <div className="px-4 py-5 flex-auto">
-                        <div className="text-white p-3 text-center inline-flex items-center justify-center w-12 h-12 mb-5 shadow-lg rounded-full bg-blue-400">
-                          <i className="fas fa-retweet"></i>
-                        </div>
-                        <h6 className="text-xl font-semibold">
-                          Free Revisions
-                        </h6>
-                        <p className="mt-2 mb-4 text-gray-600">
-                          Keep you user engaged by providing meaningful
-                          information. Remember that by this time, the user is
-                          curious.
-                        </p>
-                      </div>
-                    </div>
-                  </div>
+                      <div className="card-body">
+                        <h2 className="card-title">{product.product_name}</h2>
+                        <p>If a dog chews shoes whose shoes does he choose?</p>
 
-                  <div className="lg:pt-12 pt-6 w-full md:w-4/12 px-4 text-center">
-                    <div className="relative flex flex-col min-w-0 break-words bg-white w-full mb-8 shadow-lg rounded-lg">
-                      <div className="px-4 py-5 flex-auto">
-                        <div className="text-white p-3 text-center inline-flex items-center justify-center w-12 h-12 mb-5 shadow-lg rounded-full bg-green-400">
-                          <i className="fas fa-fingerprint"></i>
+                        <div className="card-actions justify-start mt-4">
+                          <div className="flex">
+                            <BuyHandler products={product} />
+                            <div className="badge badge-success ms-3 px-5 py-5">
+                              Rp. {product.product_price.toLocaleString()}
+                            </div>
+                            <div className="badge badge-outline ms-2 px-5 py-5">
+                              {product.categorie.category_name}
+                            </div>
+                          </div>
                         </div>
-                        <h6 className="text-xl font-semibold">
-                          Verified Company
-                        </h6>
-                        <p className="mt-2 mb-4 text-gray-600">
-                          Write a few lines about each one. A paragraph
-                          describing a feature will be enough. Keep you user
-                          engaged!
-                        </p>
                       </div>
                     </div>
-                  </div>
+                  ))}
                 </div>
+
                 {/* EndProducts Loop */}
               </div>
             </div>

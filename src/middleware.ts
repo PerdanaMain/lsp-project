@@ -32,5 +32,5 @@ export const middleware = (req: NextRequest)=>{
 
 export const config = {
   // halaman yg mau apply middleware
-  matcher:["/medkits","/admin","/admin/products"]
+  matcher:["/admin","/admin/products","/admin/orders","/admin/users","/payments/:path*", "/transactions/:path*"]
 }

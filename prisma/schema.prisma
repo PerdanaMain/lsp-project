@@ -23,6 +23,12 @@ model Users {
   // many to one relation
   role   Roles @relation(fields: [roleId], references: [role_id])
   roleId Int
+
+  // one to many relation
+  transactions Transactions[]
+
+  // one to one relation
+  bank Banks?
 }
 
 model Roles {
@@ -40,6 +46,10 @@ model Banks {
   bank_name String   @unique
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  // one to one relation
+  user   Users @relation(fields: [userId], references: [user_id])
+  userId Int   @unique
 }
 
 model Products {
@@ -54,6 +64,9 @@ model Products {
   // many to one relation
   categorie  Categories @relation(fields: [categoryId], references: [category_id])
   categoryId Int
+
+  // one to many relation
+  transactionsOnProduct TransactionsOnProducts[]
 }
 
 model Categories {
@@ -64,9 +77,48 @@ model Categories {
   products      Products[]
 }
 
+model TransactionsOnProducts {
+  transactionOnProductId Int      @id @default(autoincrement())
+  assignedAt             DateTime @default(now())
+
+  // many to one relation
+  product   Products @relation(fields: [productId], references: [product_id])
+  productId Int
+
+  // many to one relation
+  transaction   Transactions @relation(fields: [transactionId], references: [transaction_id])
+  transactionId Int
+}
+
 model Transactions {
-  transaction_id Int      @id @default(autoincrement())
-  transaction_at DateTime @default(now())
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  transaction_id       Int      @id @default(autoincrement())
+  transaction_total    Int
+  transaction_quantity Int
+  transaction_shipping Int
+  transaction_slip     String
+  transaction_end_date DateTime
+  transaction_at       DateTime @default(now())
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+
+  // many to one relation
+  status   Status @relation(fields: [statusId], references: [status_id])
+  statusId Int
+
+  // many to one relation
+  users  Users @relation(fields: [userId], references: [user_id])
+  userId Int
+
+  // one to many relation
+  transactionsOnProduct TransactionsOnProducts[]
+}
+
+model Status {
+  status_id   Int      @id @default(autoincrement())
+  status_desc String   @unique
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // many to one relation
+  transactions Transactions[]
 }
