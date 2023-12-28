@@ -62,30 +62,3 @@ export const GET = async (req: NextRequest) => {
     );
   }
 };
-
-export const TES = (req: NextRequest) => {
-  const token = req.cookies.get("token");
-  const { pathname } = req.nextUrl;
-
-  if (!token) {
-    return NextResponse.json(
-      { status: 401, message: "Unauthorized" },
-      { status: 401 }
-    );
-  }
-  const decode = jwt.decode(token.value);
-
-  return NextResponse.json(
-    {
-      status: 200,
-      message: "Success",
-      data: {
-        token,
-        decode,
-        pathname,
-        isAdmin: isAdminRoute(pathname),
-      },
-    },
-    { status: 200 }
-  );
-};
